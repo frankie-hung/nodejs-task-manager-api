@@ -13,7 +13,8 @@ const auth = async (req, res, next) => {
             throw new Error('token not found')
         }
 
-        res.user = user
+        req.token = token
+        req.user = user
         next()
 
     } catch (e) {

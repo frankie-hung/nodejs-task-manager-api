@@ -18,8 +18,8 @@ router.post('/users', async (req, res) => {
 // get user profile of the authenticated user
 router.get('/users/me', auth, async (req, res) => {
 
-    req.send(res.user)
-    
+    res.send(req.user)
+
 })
 
 router.post('/users/login', async (req, res) => {
@@ -29,6 +29,28 @@ router.post('/users/login', async (req, res) => {
         res.send({ user, token })
     } catch (e) {
         res.status(400).send(e)
+    }
+})
+
+router.post('/users/logout', auth, async (req, res) => {
+    try {
+        req.user.tokens = req.user.tokens.filter((item) => {
+            return item.token !== req.token
+        })
+        await req.user.save()
+        res.send()
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
+router.post('/users/logoutAll', auth, async (req, res) => {
+    try {
+        req.user.tokens = []
+        await req.user.save()
+        res.send()
+    } catch (e) {
+        res.status(500).send()
     }
 })
 
